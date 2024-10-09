@@ -45,7 +45,7 @@ mymalloc(size_t size, char *file, int line)
             printf ("new size left after request to allocate %ld is %ld\n", size, newNode->size  );
             newNode->is_used = 0;
             newNode->next = NULL;
-            newNode->payload = (char*)( newNode + sizeof (struct CHUNK));
+            newNode->payload = ((char*) newNode) + sizeof (struct CHUNK);
 
             
             tmp->size = size;
@@ -96,7 +96,7 @@ void init ()
         mylist = (struct CHUNK*) &global_heap;
         mylist->is_used = 0;
         mylist->size = MEMLENGTH - sizeof (struct CHUNK);
-        mylist->payload = (char*) (mylist + sizeof (struct CHUNK));
+        mylist->payload = ((char*) mylist) + sizeof (struct CHUNK);
         initialized = 1;
 
         if (atexit(checkmemleak) != 0) {
