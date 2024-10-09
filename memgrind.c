@@ -1,13 +1,13 @@
-#include "mymalloc.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
+#include "mymalloc.h"
 
-int total_errors = 0;  // Global error counter to track total errors across all test cases
+int total_errors = 0;
 
 // Helper function to increment error count and print an error message
 void report_error(const char *message) {
-    fprintf(stderr, "\x1b[31mError: %s\x1b[0m\n", message);  // Print the message in red
+    printf(stderr, "\x1b[31mError: %s\x1b[0m\n", message);
     total_errors++;
 }
 
