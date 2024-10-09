@@ -10,7 +10,7 @@ void  myfree(void *ptr, char *file, int line);
 #define malloc(x) mymalloc(x, __FILE__, __LINE__)
 #define free(x) myfree(x, __FILE__, __LINE__)
 #define MEMLENGTH 4096
-
+#define ALIGNMENT 8
 
 static void init ();
 
@@ -18,7 +18,7 @@ static void init ();
 
 
 union HEAP{
-    char bytes[MEMLENGTH];
+    unsigned char bytes[MEMLENGTH];
     double not_used;
 };
 
