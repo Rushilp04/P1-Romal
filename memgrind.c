@@ -4,18 +4,18 @@
 #include "mymalloc.h"
 #include <sys/time.h>
 
-int total_errors = 0;
+int errors = 0;
 
-// Helper function to increment error count and print an error message
+
 void report_error(const char *message) {
     printf(stderr, "\x1b[31mError: %s\x1b[0m\n", message);
-    total_errors++;
+    errors++;
 }
 
-// Test Case 1: malloc and free 1-byte objects 120 times
+
 void task_1() {
     for (int i = 0; i < 120; i++) {
-        void *ptr = malloc(1); // Allocate 1 byte
+        void *ptr = malloc(1);
         if (!ptr){
             report_error("Failed to allocate 1 byte in test_case1");
         }
@@ -23,7 +23,7 @@ void task_1() {
     }
 }
 
-// Test Case 2: Allocate 120 1-byte objects, then free them
+
 void task_2() {
     void *pointers[120];
     for (int i = 0; i < 120; i++) {
@@ -33,11 +33,11 @@ void task_2() {
         }
     }
     for (int i = 0; i < 120; i++) {
-        free(pointers[i]);    // Free each pointer
+        free(pointers[i]);
     }
 }
 
-// Test Case 3: Random allocation and free
+
 void task_3() {
     void *pointers[120] = {NULL}; // Array to hold 120 pointers
     int allocated = 0;
@@ -47,19 +47,19 @@ void task_3() {
             if (!pointers[allocated - 1]){
                 report_error("Failed to allocate 1 byte in test_case3");
             }
-        } else if (allocated > 0){   // Free randomly
+        } else if (allocated > 0){
             int index = rand() % allocated;
             free(pointers[index]);
-            pointers[index] = pointers[--allocated]; // Move last element to index
+            pointers[index] = pointers[--allocated];
         }
     }
-    // Free any remaining allocated pointers
+    
     for (int i = 0; i < allocated; i++) {
         free(pointers[i]);
     }
 }
 
-// Test Case 4: Allocate large objects and check for memory leaks
+
 void task_4() {
     void *pointers[50];
     for (int i = 0; i < 50; i++) {
@@ -69,14 +69,13 @@ void task_4() {
             exit(1);
         }
     }
-    // No freeing, this should be detected by the leak detector
+    // No freeing
 }
 
-// Test Case 5: Allocate objects, free half, and allocate again
+
 void task_5() {
     void *pointers[60];
     
-    // Allocate 60 1-byte objects
     for (int i = 0; i < 60; i++) {
         pointers[i] = malloc(1);
         if (!pointers[i]) {
@@ -84,12 +83,12 @@ void task_5() {
         }
     }
 
-    // Free half of the objects
+    // free half the objects
     for (int i = 0; i < 30; i++) {
         free(pointers[i]);
     }
 
-    // Allocate 30 more objects
+    
     for (int i = 0; i < 30; i++) {
         pointers[i] = malloc(1);
         if (!pointers[i]) {
@@ -97,7 +96,7 @@ void task_5() {
         }
     }
 
-    // Free remaining objects
+    
     for (int i = 30; i < 60; i++) {
         free(pointers[i]);
     }
@@ -108,11 +107,11 @@ void run_tasks(void (*test_func)(), const char *test_name) {
     struct timeval start;
     struct timeval end;
 
-    gettimeofday(&start, NULL); // Record start time
+    gettimeofday(&start, NULL);
 
-    test_func();  // Run the test case
+    test_func();
 
-    gettimeofday(&end, NULL);  // Record end time
+    gettimeofday(&end, NULL);
 
     // Calculate the elapsed time in microseconds
     long seconds = (end.tv_sec - start.tv_sec);
@@ -120,12 +119,12 @@ void run_tasks(void (*test_func)(), const char *test_name) {
     printf("%s took %ld microseconds\n", test_name, microseconds);
 }
 
-// Summarize the results of all tests and print the total error count
-void summarize_results() {
-    if (total_errors == 0) {
+
+void sum() {
+    if (errors == 0) {
         printf("All tests passed successfully.\n");
     } else {
-        printf("\x1b[31mTest completed with %d errors.\n\x1b[0m", total_errors);  // Print in red
+        printf("\x1b[31mTest completed with %d errors.\n\x1b[0m", errors);
     }
 }
 
@@ -148,7 +147,7 @@ void run_all_tasks() {
 }
 
 int main() {
-    run_all_tests();  // Run all test cases
-    summarize_results(); // Summarize the results of all test cases
+    run_all_tests();
+    sum();
     return EXIT_SUCCESS;
 }

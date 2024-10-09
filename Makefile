@@ -1,6 +1,6 @@
 all: myheap
 
-myheap: memtest.o libmylib.a #libmylib.a is the dependency for the executable
+myheap: memtest.o libmylib.a
 	gcc -o myheap memtest.o -L. -lmylib -lm
 
 memtest.o: memtest.c 

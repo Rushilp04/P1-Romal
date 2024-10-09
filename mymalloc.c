@@ -13,11 +13,8 @@ void checkmemleak (void)
    int leakitems = 0;
    struct CHUNK* tmp = mylist;
 
-   while (tmp != NULL)
-   { 
-      if (tmp->is_used == 1)
-      {
-        //printf ("mem leak of %ld bytes\n", tmp->size);
+   while (tmp != NULL){ 
+      if (tmp->is_used == 1){
     	leakitems += 1;
         leak = leak + tmp->size;
       } 
@@ -28,11 +25,9 @@ void checkmemleak (void)
    }
    printf ("%d bytes leaked in %d objects\n",  leak, leakitems);
 }
-void init ()
-{
+void init (){
     
-    if (!initialized)
-    {
+    if (!initialized){
         mylist = (struct CHUNK*)&global_heap;
         mylist->is_used = 0;
         mylist->size = MEMLENGTH - sizeof(struct CHUNK);
@@ -134,7 +129,7 @@ void  myfree(void *ptr, char *file, int line)
     {
         if (tmp->payload == ptr)
         {
-            //found: we need to free this block and make it available
+            
             tmp->is_used = 0;
             found = 1;
             break;
