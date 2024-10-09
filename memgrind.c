@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "mymalloc.h"
+#include <sys/time.h>
 
 int total_errors = 0;
 
@@ -60,92 +61,94 @@ void task_3() {
 
 // Test Case 4: Allocate large objects and check for memory leaks
 void task_4() {
-    void *pointers[50];
-    for (int i = 0; i < 50; i++) {
-        pointers[i] = malloc(64);  // Allocate 64-byte objects
-        if (pointers[i] == NULL) {
-            report_error("Failed to allocate 64 bytes in test_case4");
-            exit(1);
-        }
-    }
-    // No freeing, this should be detected by the leak detector
+    void *pointers[50];
+    for (int i = 0; i < 50; i++) {
+        pointers[i] = malloc(64);  // Allocate 64-byte objects
+        if (pointers[i] == NULL) {
+            report_error("Failed to allocate 64 bytes in test_case4");
+            exit(1);
+        }
+    }
+    // No freeing, this should be detected by the leak detector
 }
 
 // Test Case 5: Allocate objects, free half, and allocate again
 void task_5() {
-    void *pointers[60];
-    
-    // Allocate 60 1-byte objects
-    for (int i = 0; i < 60; i++) {
-        pointers[i] = malloc(1);
-        if (!pointers[i]) {
-            report_error("Failed to allocate 1 byte in test_case5 (first pass)");
-        }
-    }
+    void *pointers[60];
+    
+    // Allocate 60 1-byte objects
+    for (int i = 0; i < 60; i++) {
+        pointers[i] = malloc(1);
+        if (!pointers[i]) {
+            report_error("Failed to allocate 1 byte in test_case5 (first pass)");
+        }
+    }
 
-    // Free half of the objects
-    for (int i = 0; i < 30; i++) {
-        free(pointers[i]);
-    }
+    // Free half of the objects
+    for (int i = 0; i < 30; i++) {
+        free(pointers[i]);
+    }
 
-    // Allocate 30 more objects
-    for (int i = 0; i < 30; i++) {
-        pointers[i] = malloc(1);
-        if (!pointers[i]) {
-            report_error("Failed to allocate 1 byte in test_case5 (second pass)");
-        }
-    }
+    // Allocate 30 more objects
+    for (int i = 0; i < 30; i++) {
+        pointers[i] = malloc(1);
+        if (!pointers[i]) {
+            report_error("Failed to allocate 1 byte in test_case5 (second pass)");
+        }
+    }
 
-    // Free remaining objects
-    for (int i = 30; i < 60; i++) {
-        free(pointers[i]);
-    }
+    // Free remaining objects
+    for (int i = 30; i < 60; i++) {
+        free(pointers[i]);
+    }
 }
 
 // Function to run a test case and measure its performance
 void run_tasks(void (*test_func)(), const char *test_name) {
-    struct timeval start, end;
-    gettimeofday(&start, NULL);  // Record start time
-    
-    test_func();  // Run the test case
+    struct timeval start;
+    struct timeval end;
 
-    gettimeofday(&end, NULL);  // Record end time
-    
-    // Calculate the elapsed time in microseconds
-    long seconds = (end.tv_sec - start.tv_sec);
-    long microseconds = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
-    printf("%s took %ld microseconds\n", test_name, microseconds);
+    gettimeofday(&start, NULL); // Record start time
+
+    test_func();  // Run the test case
+
+    gettimeofday(&end, NULL);  // Record end time
+
+    // Calculate the elapsed time in microseconds
+    long seconds = (end.tv_sec - start.tv_sec);
+    long microseconds = ((seconds * 1000000) + end.tv_usec) - (start.tv_usec);
+    printf("%s took %ld microseconds\n", test_name, microseconds);
 }
 
 // Summarize the results of all tests and print the total error count
 void summarize_results() {
-    if (total_errors == 0) {
-        printf("All tests passed successfully.\n");
-    } else {
-        printf("\x1b[31mTest completed with %d errors.\n\x1b[0m", total_errors);  // Print in red
-    }
+    if (total_errors == 0) {
+        printf("All tests passed successfully.\n");
+    } else {
+        printf("\x1b[31mTest completed with %d errors.\n\x1b[0m", total_errors);  // Print in red
+    }
 }
 
 
 // Run all test cases multiple times and measure average performance
 void run_all_tasks() {
-    const int iterations = 1;
-    for (int i = 0; i < iterations; i++) {
-        run_task(task_1, "Task 1");
-        reset_heap();
-        run_task(task_2, "Task 2");
-        reset_heap();
-        run_task(task_3, "Task 3");
-        reset_heap();
-        run_task(task_4, "Task 4");
-        reset_heap();
-        run_task(task_5, "Task 5");
-        reset_heap();
-    }
+    const int iterations = 1;
+    for (int i = 0; i < iterations; i++) {
+        run_task(task_1, "Task 1");
+        reset_heap();
+        run_task(task_2, "Task 2");
+        reset_heap();
+        run_task(task_3, "Task 3");
+        reset_heap();
+        run_task(task_4, "Task 4");
+        reset_heap();
+        run_task(task_5, "Task 5");
+        reset_heap();
+    }
 }
 
 int main() {
-    run_all_tests();  // Run all test cases
-    summarize_results();  // Summarize the results of all test cases
-    return EXIT_SUCCESS;
+    run_all_tests();  // Run all test cases
+    summarize_results(); // Summarize the results of all test cases
+    return EXIT_SUCCESS;
 }
